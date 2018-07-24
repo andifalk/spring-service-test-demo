@@ -1,5 +1,6 @@
-package com.example.servicetestdemo;
+package com.example.servicetestdemo.person;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import javax.persistence.Entity;
@@ -37,5 +38,29 @@ public class Person extends AbstractPersistable<Long> {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public void setIdentifier(UUID identifier) {
+        this.identifier = identifier;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    @JsonIgnore
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
+
+    @JsonIgnore
+    @Override
+    public boolean isNew() {
+        return super.isNew();
     }
 }

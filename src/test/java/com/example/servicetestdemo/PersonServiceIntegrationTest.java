@@ -1,18 +1,21 @@
 package com.example.servicetestdemo;
 
+import com.example.servicetestdemo.person.Person;
+import com.example.servicetestdemo.person.PersonService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.IdGenerator;
+import org.springframework.util.JdkIdGenerator;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,9 +32,6 @@ public class PersonServiceIntegrationTest {
 
     @Autowired
     private PersonService cut;
-
-    @Autowired
-    private PersonRepository personRepository;
 
     @Test
     public void verifySavePerson() {
@@ -61,8 +61,19 @@ public class PersonServiceIntegrationTest {
     }
 
     @Configuration
-    @ComponentScan
+    @EnableJpaRepositories(basePackages = PersonServiceConfig.BASE_PACKAGE_PATH)
+    @EntityScan(basePackages = PersonServiceConfig.BASE_PACKAGE_PATH)
+    @AutoConfigureDataJpa
+    @ComponentScan(basePackages = PersonServiceConfig.BASE_PACKAGE_PATH)
     static class PersonServiceConfig {
+
+        static final String BASE_PACKAGE_PATH = "com.example.servicetestdemo.person";
+
+        @Bean
+        IdGenerator idGenerator() {
+            return new JdkIdGenerator();
+        }
+
     }
 
 }

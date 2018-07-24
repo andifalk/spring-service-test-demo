@@ -1,7 +1,8 @@
-package com.example.servicetestdemo;
+package com.example.servicetestdemo.person;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.IdGenerator;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,9 +12,11 @@ import java.util.UUID;
 public class PersonService {
 
     private final PersonRepository personRepository;
+    private final IdGenerator idGenerator;
 
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, IdGenerator idGenerator) {
         this.personRepository = personRepository;
+        this.idGenerator = idGenerator;
     }
 
     public Person findOneByIdentifier(UUID identifier) {
@@ -26,6 +29,9 @@ public class PersonService {
 
     @Transactional
     public Person save(Person entity) {
+        if (entity.getIdentifier() == null) {
+            entity.setIdentifier(idGenerator.generateId());
+        }
         return personRepository.save(entity);
     }
 }
